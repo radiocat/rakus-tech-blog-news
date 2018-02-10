@@ -5,6 +5,8 @@ var util = require('util');
 var http = require('http');
 var moment = require("moment");
 
+const BLOG_RSS_URL = 'http://tech-blog.rakus.co.jp/rss';
+
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -15,8 +17,13 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+var sendResponse = function(response, resultObject){
+  response.setHeader("Content-Type", "application/json");
+  response.send(JSON.stringify(resultObject));
+};
+
+// Google Assistant向けJSONを返す
 app.post('/', function(request, response, next) {
-  const BLOG_RSS_URL = 'http://tech-blog.rakus.co.jp/rss';
   var feedMeta;
   var speechText = "最新のブログ情報をお知らせします。\n";
   var itemCount = 0;
@@ -71,11 +78,6 @@ app.post('/', function(request, response, next) {
     };
   };
 
-  var sendResponse = function(response, resultObject){
-    response.setHeader("Content-Type", "application/json");
-    response.send(JSON.stringify(resultObject));
-  };
-
   // RSSフィードを取得する
   http.get(BLOG_RSS_URL, function(res) {
     res.pipe(new FeedParser({}))
@@ -124,6 +126,51 @@ app.post('/', function(request, response, next) {
         };
 
         sendResponse(response, createResultObject(hasScreen, speechText, basicCard));
+      });
+  });
+
+});
+
+// Alexaのフラッシュブリーフィングフィード向けJSONを返す
+app.get('/alexa/feed/json', function(request, response, next) {
+  var feedData = [];
+  var itemCount = 0;
+
+  console.log('[REQUEST]', util.inspect(request.body,false,null));
+
+  // RSSフィードを取得する
+  http.get(BLOG_RSS_URL, function(res) {
+    res.pipe(new FeedParser({}))
+      .on('error', function(error) {
+        response.status(500).send(http.STATUS_CODES[500] + '\r\n');
+      })
+      .on('meta', function(meta) {
+        feedMeta = meta;
+      })
+      .on('readable', function() {
+        var stream = this, item;
+
+        while (item = stream.read()) {
+          if (itemCount >= 5) {
+            break;
+          }
+
+          feedData.push(
+            {
+              "uid": item.guid,
+              "updateDate": item.pubDate,
+              "titleText": item.title,
+              "mainText": moment(item.pubDate).format("M月D日") + "投稿、" + item.title,
+              "redirectionUrl": item.link
+            }
+          );
+
+          itemCount += 1;
+        }
+      })
+      .on('end', function() {
+        console.log(feedData);
+        sendResponse(response, feedData);
       });
   });
 
