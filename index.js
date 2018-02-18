@@ -1,13 +1,13 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var FeedParser = require('feedparser');
-var util = require('util');
-var http = require('http');
-var moment = require("moment");
+const express = require('express');
+const bodyParser = require('body-parser');
+const FeedParser = require('feedparser');
+const util = require('util');
+const http = require('http');
+const moment = require("moment");
 
 const BLOG_RSS_URL = 'http://tech-blog.rakus.co.jp/rss';
 
-var app = express();
+let app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -17,16 +17,16 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-var sendResponse = function(response, resultObject){
+const sendResponse = function(response, resultObject){
   response.setHeader("Content-Type", "application/json");
   response.send(JSON.stringify(resultObject));
 };
 
 // Google Assistant向けJSONを返す
 app.post('/', function(request, response, next) {
-  var feedMeta;
-  var speechText = "最新のブログ情報をお知らせします。\n";
-  var itemCount = 0;
+  let feedMeta;
+  let speechText = "最新のブログ情報をお知らせします。\n";
+  let itemCount = 0;
 
   if (!request.body) {
     response.status(400).send(http.STATUS_CODES[400] + '\r\n');
@@ -46,7 +46,7 @@ app.post('/', function(request, response, next) {
       return false;
   })(request.body.originalRequest.data);
 
-  var createResultObject =  function (hasScreen, word, basicCard) {
+  const createResultObject =  function (hasScreen, word, basicCard) {
       if (hasScreen) {
         return  {
           "speech": word,
@@ -89,7 +89,7 @@ app.post('/', function(request, response, next) {
         feedMeta = meta;
       })
       .on('readable', function() {
-        var stream = this, item;
+        let stream = this, item;
 
         // chunkデータを保存する
         while (item = stream.read()) {
@@ -106,7 +106,7 @@ app.post('/', function(request, response, next) {
       .on('end', function() {
         
         console.log(speechText);
-        var basicCard = {
+        const basicCard = {
           "basicCard": {
             "title": feedMeta.title,
             "formattedText": feedMeta.description,
@@ -133,8 +133,8 @@ app.post('/', function(request, response, next) {
 
 // Alexaのフラッシュブリーフィングフィード向けJSONを返す
 app.get('/alexa/feed/json', function(request, response, next) {
-  var feedData = [];
-  var itemCount = 0;
+  let feedData = [];
+  let itemCount = 0;
 
   console.log('[REQUEST]', util.inspect(request.body,false,null));
 
@@ -148,7 +148,7 @@ app.get('/alexa/feed/json', function(request, response, next) {
         feedMeta = meta;
       })
       .on('readable', function() {
-        var stream = this, item;
+        let stream = this, item;
 
         while (item = stream.read()) {
           if (itemCount >= 5) {
