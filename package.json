@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node test.js"
+    "test": "gulp test"
   },
   "dependencies": {
     "util": "0.10.3",
@@ -19,6 +19,10 @@
     "moment": "^2.20.1"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^5.0.0",
     "request": "^2.81.0",
     "tape": "^4.7.0"
   },
