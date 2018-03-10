@@ -17,7 +17,7 @@ const server = app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-exports.closeServer = function(){
+module.exports.closeServer = function(){
   server.close();
 };
 
@@ -25,6 +25,8 @@ const sendResponse = function(response, resultObject){
   response.setHeader("Content-Type", "application/json");
   response.send(JSON.stringify(resultObject));
 };
+
+module.exports.sendResponse = sendResponse;
 
 // Google Assistant向けJSONを返す
 app.post('/', function(request, response, next) {
