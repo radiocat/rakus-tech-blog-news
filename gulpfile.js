@@ -12,6 +12,6 @@ gulp.task('test', ['pre-test'], function() {
     return gulp.src('./test/**/*.js')
         .pipe(mocha())
         .pipe(istanbul.writeReports())
-        .pipe(istanbul.enforceThresholds({ thresholds: { global: 10 } }));
+        .pipe(istanbul.enforceThresholds({ thresholds: { global: 25 } }));
 });
 

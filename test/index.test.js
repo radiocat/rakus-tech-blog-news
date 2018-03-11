@@ -53,6 +53,18 @@ describe('Server Test', function(){
 
   });
 
+  describe('/alexa/feed/json', function(){
+
+    it('正常レスポンスを返す', function(done) {
+      request(host)
+      .get('/alexa/feed/json')
+      .expect(200, done);
+
+    });
+
+  });
+
+
   after(function() {
     index.closeServer();
   });
