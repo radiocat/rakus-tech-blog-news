@@ -1,6 +1,6 @@
 var index = require('../index.js');
 var assert = require('assert');
-var request = require('supertest');
+var request = require('superagent');
 var sinon = require('sinon');
 var host = 'http://localhost:5000';
 
@@ -15,12 +15,12 @@ describe('Server Test', function(){
 
   describe('/', function(done){
     it('Get Access Error', function(){
-      var status = 400;
-      request(host)
-        .get('/')
-        .expect(status, '', function(err) {
-           console.log('Get Error Tests');
-           done(err);
+      request
+        .get(host + '/')
+        .end(function(err, res) {
+          console.log('Get Error Tests');
+          assert(res.status === 400);
+          done(err);
         });
     });
   });
@@ -56,14 +56,15 @@ describe('Server Test', function(){
   describe('/alexa/feed/json', function(){
 
     it('正常レスポンスを返す', function(done) {
-      request(host)
-      .get('/alexa/feed/json')
-      .expect(200, done);
-
+      request
+      .get(host + '/alexa/feed/json')
+      .end(function(err, res) {
+        assert(res.status === 200);
+        done();
+      });
     });
 
   });
-
 
   after(function() {
     index.closeServer();
