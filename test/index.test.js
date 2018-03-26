@@ -66,6 +66,36 @@ describe('Server Test', function(){
 
   });
 
+  describe('/', function(){
+    // Google Homeから呼び出された時のリクエスト
+    const param = { "originalRequest":
+      {
+        //...省略
+        "data":
+        { 
+          // ...省略
+          "surface": { "capabilities": [ 
+            { "name": "actions.capability.AUDIO_OUTPUT" },
+            { "name": "actions.capability.SCREEN_OUTPUT" }
+            ] },
+            // ...省略
+        }
+      }
+    };
+    
+    it('正常レスポンスを返す', function(done) {
+      request
+      .post(host + '/')
+      .set('Content-Type', 'application/json')
+      .send(param)
+      .end(function(err, res) {
+        assert(res.status === 200);
+        done();
+      });
+    });
+
+  });
+
   after(function() {
     index.closeServer();
   });
