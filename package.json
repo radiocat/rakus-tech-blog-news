@@ -1,6 +1,6 @@
 {
   "name": "rakus-tech-blog-news",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "rakus tech blog news",
   "engines": {
     "node": "6.11.1"
