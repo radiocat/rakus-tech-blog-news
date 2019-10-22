@@ -55,8 +55,8 @@ app.post('/', function(request, response, next) {
   const createResultObject =  function (hasScreen, word, basicCard) {
       if (hasScreen) {
         return  {
-          "speech": word,
-          "data": {
+          "fulfillmentText": word,
+          "payload": {
             "google": {
               "expectUserResponse": false,
               "richResponse": {
@@ -80,7 +80,14 @@ app.post('/', function(request, response, next) {
       };
     }
     return {
-      "speech": word , "displayText": word
+      "fulfillmentText": word , 
+      "fulfillmentMessages": [
+        {
+          "text": [
+            word
+          ],
+        }
+      ]
     };
   };
 
