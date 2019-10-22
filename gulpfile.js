@@ -8,10 +8,10 @@ gulp.task('pre-test', function () {
       .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], function() {
+gulp.task('test', gulp.series('pre-test', function() {
     return gulp.src('./test/**/*.js')
         .pipe(mocha())
         .pipe(istanbul.writeReports())
         .pipe(istanbul.enforceThresholds({ thresholds: { global: 80 } }));
-});
+}));
 
