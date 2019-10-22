@@ -40,9 +40,9 @@ app.post('/', function(request, response, next) {
   }
   console.log('[REQUEST]', util.inspect(request.body,false,null));
 
-  const hasScreen = (function (data) {
-      if (data.surface && data.surface.capabilities) {
-        for (let v of data.surface.capabilities) {
+  const hasScreen = (function (payload) {
+      if (payload.surface && payload.surface.capabilities) {
+        for (let v of payload.surface.capabilities) {
           if (v.name === 'actions.capability.SCREEN_OUTPUT'){
             console.log('ENABLE SCREEN_OUTPUT');
             return true;
@@ -50,7 +50,7 @@ app.post('/', function(request, response, next) {
         };
       }
       return false;
-  })(request.body.originalRequest.data);
+  })(request.body.originalDetectIntentRequest.payload);
 
   const createResultObject =  function (hasScreen, word, basicCard) {
       if (hasScreen) {

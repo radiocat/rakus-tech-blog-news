@@ -19,8 +19,7 @@ describe('Server Test', function(){
         .get(host + '/')
         .end(function(err, res) {
           console.log('Get Error Tests');
-          assert(res.status === 400);
-          done(err);
+          assert.deepEqual(res.status, 404);
         });
     });
   });
@@ -68,10 +67,10 @@ describe('Server Test', function(){
 
   describe('/', function(){
     // Google Homeから呼び出された時のリクエスト
-    const param = { "originalRequest":
+    const param = { "originalDetectIntentRequest":
       {
         //...省略
-        "data":
+        "payload":
         { 
           // ...省略
           "surface": { "capabilities": [ 
